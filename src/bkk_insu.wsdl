@@ -1,0 +1,202 @@
+<definitions name="MockService"
+    targetNamespace="http://REPLACE_URL_HERE/mockService"
+    xmlns:tns="http://REPLACE_URL_HERE/mockService"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+
+    <!-- WSDL Message Section เป็นเหมือน DTO -->
+    <message name="ClaimsKnockReqSoapIn">
+        <part name="bodyReqeust" type="tns:ClaimKnockRequest" />
+    </message>
+    <message name="ClaimsKnockReqSoapOut">
+        <part name="bodyResponse" type="tns:ClaimKnockResponse" />
+    </message>
+    <message name="SampleClaimIn">
+        <part name="sampleBodyResponse" type="tns:SampleClaimRequest" />
+    </message>
+    <message name="SampleClaimOut">
+        <part name="sampleBodyResponse" type="tns:SampleClaimResponse" />
+    </message>
+
+    <!-- WSDL Types Section คือ หน้าตาของ body -->
+    <types>
+        <xsd:schema targetNamespace="http://REPLACE_URL_HERE/mockService">
+            <xsd:element name="SampleClaimRequest">
+                <xsd:all>
+                    <xsd:element>
+                        <xsd:element minOccurs="0" maxOccurs="1" name="ClaimId" type="s:string" />
+                    </xsd:element>
+                </xsd:all>
+            </xsd:element>
+
+            <xsd:element name="SampleClaimResponse">
+                <xsd:all>
+                    <xsd:element>
+                        <xsd:element minOccurs="0" maxOccurs="1" name="InsurerIdRq" type="s:string" />
+                        <xsd:element minOccurs="0" maxOccurs="1" name="PolicyNumberRq" type="s:string" />
+                    </xsd:element>
+                </xsd:all>
+            </xsd:element>
+
+            <xsd:element name="ClaimKnockRequest">
+                <xsd:all>
+                    <xsd:element minOccurs="0" maxOccurs="1" name="InsurerIdRq" type="s:string" />
+                    <xsd:element minOccurs="1" maxOccurs="1" name="TransactionRequestDtRq"
+                        type="s:dateTime" />
+                    <xsd:element minOccurs="1" maxOccurs="1" name="LossDtRq" type="s:dateTime" />
+                    <xsd:element minOccurs="0" maxOccurs="1" name="PolicyNumberRq"
+                        type="s:string" />
+                    <xsd:element minOccurs="0" maxOccurs="1" name="PolicyTypeCdRq"
+                        type="s:string" />
+                    <xsd:element minOccurs="0" maxOccurs="1" name="ClaimsOccurenceRq"
+                        type="s:string" />
+                    <xsd:element minOccurs="0" maxOccurs="1" name="RegistrationRq"
+                        type="s:string" />
+                    <xsd:element minOccurs="1" maxOccurs="1" name="PaymentAmtRq" type="s:decimal" />
+                    <xsd:element minOccurs="0" maxOccurs="1" name="UserRq" type="s:string" />
+                    <xsd:element minOccurs="0" maxOccurs="1" name="InsurerIdRs" type="s:string" />
+                    <xsd:element minOccurs="0" maxOccurs="1" name="PolicyNumberRs"
+                        type="s:string" />
+                    <xsd:element minOccurs="0" maxOccurs="1" name="ClaimsOccurenceRs"
+                        type="s:string" />
+                    <xsd:element minOccurs="0" maxOccurs="1" name="RegistrationRs"
+                        type="s:string" />
+                </xsd:all>
+            </xsd:element>
+
+            <xsd:element name="ClaimKnockResponse">
+                <xsd:complexType>
+                    <xsd:all>
+                        <xsd:element minOccurs="0" maxOccurs="1" name="RecordGUID" type="s:string" />
+                        <xsd:element minOccurs="0" maxOccurs="1" name="SPName" type="s:string" />
+                        <xsd:element minOccurs="0" maxOccurs="1" name="PolicyNumber" type="s:string" />
+                        <xsd:element minOccurs="1" maxOccurs="1" name="EffectiveDt"
+                            type="s:dateTime" />
+                        <xsd:element minOccurs="1" maxOccurs="1" name="ExpirationDt"
+                            type="s:dateTime" />
+                        <xsd:element minOccurs="0" maxOccurs="1" name="PersonName" type="s:string" />
+                        <xsd:element minOccurs="0" maxOccurs="1" name="PolicyTypeCd" type="s:string" />
+                        <xsd:element minOccurs="0" maxOccurs="1" name="VehTypeCd" type="s:string" />
+                        <xsd:element minOccurs="0" maxOccurs="1" name="Registration" type="s:string" />
+                        <xsd:element minOccurs="0" maxOccurs="1" name="Manufacturer" type="s:string" />
+                        <xsd:element minOccurs="0" maxOccurs="1" name="Model" type="s:string" />
+                        <xsd:element minOccurs="0" maxOccurs="1" name="ChassisSerialNumber"
+                            type="s:string" />
+                        <xsd:element minOccurs="0" maxOccurs="1" name="EngineSerialNumber"
+                            type="s:string" />
+                        <xsd:element minOccurs="1" maxOccurs="1" name="Displacement"
+                            type="s:decimal" />
+                        <xsd:element minOccurs="1" maxOccurs="1" name="GrossVehOrCombinedWeight"
+                            type="s:decimal" />
+                        <xsd:element minOccurs="1" maxOccurs="1" name="SeatingCapacity"
+                            type="s:decimal" />
+                        <xsd:element minOccurs="0" maxOccurs="1" name="Coverages"
+                            type="tns:ArrayOfCoverage" />
+                        <xsd:element minOccurs="0" maxOccurs="1" name="ClaimOccurences"
+                            type="tns:ArrayOfClaimOccurence" />
+                        <xsd:element minOccurs="1" maxOccurs="1" name="TransactionResponseDt"
+                            type="s:dateTime" />
+                        <xsd:element minOccurs="0" maxOccurs="1" name="MsgStatusCd" type="s:string" />
+                    </xsd:all>
+                </xsd:complexType>
+            </xsd:element>
+
+            <!-- complexType คือ $ref -->
+            <xsd:complexType name="ArrayOfClaimOccurence">
+                <xsd:all>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="ClaimOccurence"
+                        nillable="true" type="tns:ClaimOccurence" />
+                </xsd:all>
+            </xsd:complexType>
+
+            <xsd:complexType name="ClaimOccurence">
+                <xsd:all>
+                    <xsd:element minOccurs="0" maxOccurs="1" name="ClaimNoticeCd" type="s:string" />
+                    <xsd:element minOccurs="0" maxOccurs="1" name="ItemIdInfo" type="s:string" />
+                    <xsd:element minOccurs="0" maxOccurs="1" name="NotifyNumber" type="s:string" />
+                    <xsd:element minOccurs="1" maxOccurs="1" name="LossDt" type="s:dateTime" />
+                    <xsd:element minOccurs="0" maxOccurs="1" name="KfkStatus" type="s:string" />
+                    <xsd:element minOccurs="1" maxOccurs="1" name="ReserveAmt" type="s:decimal" />
+                    <xsd:element minOccurs="1" maxOccurs="1" name="PaymentAmt" type="s:decimal" />
+                    <xsd:element minOccurs="0" maxOccurs="1" name="PaymentTypeCd" type="s:string" />
+                    <xsd:element minOccurs="0" maxOccurs="1" name="InDisputeInd" type="s:string" />
+                    <xsd:element minOccurs="0" maxOccurs="1" name="WhereOccurredDesc"
+                        type="s:string" />
+                    <xsd:element minOccurs="0" maxOccurs="1" name="LossCauseDesc" type="s:string" />
+                </xsd:all>
+            </xsd:complexType>
+
+            <xsd:complexType name="ArrayOfCoverage">
+                <xsd:all>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="Coverage" nillable="true"
+                        type="tns:Coverage" />
+                </xsd:all>
+            </xsd:complexType>
+
+            <xsd:complexType name="Coverage">
+                <xsd:all>
+                    <xsd:element minOccurs="0" maxOccurs="1" name="CoverageCd" type="s:string" />
+                    <xsd:element minOccurs="0" maxOccurs="1" name="CoverageDesc" type="s:string" />
+                    <xsd:element minOccurs="0" maxOccurs="1" name="Limit" type="tns:Limit" />
+                </xsd:all>
+            </xsd:complexType>
+
+            <xsd:complexType name="Limit">
+                <xsd:all>
+                    <xsd:element minOccurs="1" maxOccurs="1" name="LimitAmt" type="s:decimal" />
+                    <xsd:element minOccurs="1" maxOccurs="1" name="LimitAmtEachPerson"
+                        type="s:decimal" />
+                    <xsd:element minOccurs="1" maxOccurs="1" name="LimitAmtEachAccident"
+                        type="s:decimal" />
+                </xsd:all>
+            </xsd:complexType>
+        </xsd:schema>
+    </types>
+
+
+    <!-- WSDL Port Type (Interface) Section
+    ใช้บอกว่ามีฟังก์ชันอะไรให้ใช้บ้างและในแต่ละ operation มีอะไรเป็น request body และ response
+    -->
+    <portType name="MockServicePortType">
+        <operation name="ClaimKnock">
+            <input message="tns:ClaimsKnockReqSoapIn" />
+            <output message="tns:ClaimsKnockReqSoapOut" />
+        </operation>
+        <operation name="SampleClaim">
+            <input message="tns:SampleClaimIn" />
+            <output message="tns:SampleClaimOut" />
+        </operation>
+    </portType>
+
+    <!-- WSDL Binding Section เป็นเหมือน Controller -->
+    <binding name="MockServiceBinding" type="tns:MockServicePortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
+        <operation name="ClaimKnock">
+            <soap:operation soapAction="ClaimKnock" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+
+        <operation name="SampleClaim">
+            <soap:operation soapAction="SampleClaim" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+    </binding>
+
+    <!-- WSDL Service Section -->
+    <service name="MockService">
+        <port name="MockServicePortType" binding="tns:MockServiceBinding">
+            <soap:address location="http://localhost:3000/soap/mock" />
+        </port>
+    </service>
+</definitions>

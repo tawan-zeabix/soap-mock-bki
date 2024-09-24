@@ -1,0 +1,210 @@
+<wsdl:definitions name="MockService"
+    xmlns:s="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://example.com/mockService"
+    xmlns:tns="http://example.com/mockService"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/"
+    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+    xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+    xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+>
+
+    <!-- WSDL Types Section คือ หน้าตาของ body -->
+    <wsdl:types>
+        <s:schema elementFormDefault="qualified"
+            targetNamespace="http://example.com/mockService">
+            <s:element name="SampleClaimkRequest">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="CLaimId" type="s:string" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="SampleClaimkResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="InsurerIdRq" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="PolicyNumberRq" type="s:string" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+            <s:element name="ClaimKnockRequest">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="InsurerIdRq" type="s:string" />
+                        <s:element minOccurs="1" maxOccurs="1" name="TransactionRequestDtRq"
+                            type="s:dateTime" />
+                        <s:element minOccurs="1" maxOccurs="1" name="LossDtRq" type="s:dateTime" />
+                        <s:element minOccurs="0" maxOccurs="1" name="PolicyNumberRq"
+                            type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="PolicyTypeCdRq"
+                            type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="ClaimsOccurenceRq"
+                            type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="RegistrationRq"
+                            type="s:string" />
+                        <s:element minOccurs="1" maxOccurs="1" name="PaymentAmtRq" type="s:decimal" />
+                        <s:element minOccurs="0" maxOccurs="1" name="UserRq" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="InsurerIdRs" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="PolicyNumberRs"
+                            type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="ClaimsOccurenceRs"
+                            type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="RegistrationRs"
+                            type="s:string" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+
+            <s:element name="ClaimKnockResponse">
+                <s:complexType>
+                    <s:sequence>
+                        <s:element minOccurs="0" maxOccurs="1" name="RecordGUID" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="SPName" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="PolicyNumber" type="s:string" />
+                        <s:element minOccurs="1" maxOccurs="1" name="EffectiveDt"
+                            type="s:dateTime" />
+                        <s:element minOccurs="1" maxOccurs="1" name="ExpirationDt"
+                            type="s:dateTime" />
+                        <s:element minOccurs="0" maxOccurs="1" name="PersonName" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="PolicyTypeCd" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="VehTypeCd" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="Registration" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="Manufacturer" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="Model" type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="ChassisSerialNumber"
+                            type="s:string" />
+                        <s:element minOccurs="0" maxOccurs="1" name="EngineSerialNumber"
+                            type="s:string" />
+                        <s:element minOccurs="1" maxOccurs="1" name="Displacement"
+                            type="s:decimal" />
+                        <s:element minOccurs="1" maxOccurs="1" name="GrossVehOrCombinedWeight"
+                            type="s:decimal" />
+                        <s:element minOccurs="1" maxOccurs="1" name="SeatingCapacity"
+                            type="s:decimal" />
+                        <s:element minOccurs="0" maxOccurs="1" name="Coverages"
+                        type="tns:ArrayOfCoverage" />
+                        <s:element minOccurs="0" maxOccurs="1" name="ClaimOccurences"
+                            type="tns:ArrayOfClaimOccurence" />
+                        <s:element minOccurs="1" maxOccurs="1" name="TransactionResponseDt"
+                            type="s:dateTime" />
+                        <s:element minOccurs="0" maxOccurs="1" name="MsgStatusCd" type="s:string" />
+                    </s:sequence>
+                </s:complexType>
+            </s:element>
+
+            <!-- complexType คือ $ref -->
+            <s:complexType name="ArrayOfClaimOccurence">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="unbounded" name="ClaimOccurence"
+                        nillable="true" type="tns:ClaimOccurence" />
+                </s:sequence>
+            </s:complexType>
+
+            <s:complexType name="ClaimOccurence">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="ClaimNoticeCd" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="ItemIdInfo" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="NotifyNumber" type="s:string" />
+                    <s:element minOccurs="1" maxOccurs="1" name="LossDt" type="s:dateTime" />
+                    <s:element minOccurs="0" maxOccurs="1" name="KfkStatus" type="s:string" />
+                    <s:element minOccurs="1" maxOccurs="1" name="ReserveAmt" type="s:decimal" />
+                    <s:element minOccurs="1" maxOccurs="1" name="PaymentAmt" type="s:decimal" />
+                    <s:element minOccurs="0" maxOccurs="1" name="PaymentTypeCd" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="InDisputeInd" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="WhereOccurredDesc" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="LossCauseDesc" type="s:string" />
+                </s:sequence>
+            </s:complexType>
+
+            <s:complexType name="ArrayOfCoverage">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="unbounded" name="Coverage" nillable="true"
+                        type="tns:Coverage" />
+                </s:sequence>
+            </s:complexType>
+
+            <s:complexType name="Coverage">
+                <s:sequence>
+                    <s:element minOccurs="0" maxOccurs="1" name="CoverageCd" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="CoverageDesc" type="s:string" />
+                    <s:element minOccurs="0" maxOccurs="1" name="Limit" type="tns:Limit" />
+                </s:sequence>
+            </s:complexType>
+
+            <s:complexType name="Limit">
+                <s:sequence>
+                    <s:element minOccurs="1" maxOccurs="1" name="LimitAmt" type="s:decimal" />
+                    <s:element minOccurs="1" maxOccurs="1" name="LimitAmtEachPerson"
+                        type="s:decimal" />
+                    <s:element minOccurs="1" maxOccurs="1" name="LimitAmtEachAccident"
+                        type="s:decimal" />
+                </s:sequence>
+            </s:complexType>
+
+        </s:schema>
+    </wsdl:types>
+
+    <!-- WSDL Message Section เป็นเหมือน DTO -->
+    <wsdl:message name="ClaimsKnockReqSoapIn">
+        <wsdl:part name="parameters" element="tns:ClaimKnockRequest" />
+    </wsdl:message>
+    <wsdl:message name="ClaimsKnockReqSoapOut">
+        <wsdl:part name="parameters" element="tns:ClaimKnockResponse" />
+    </wsdl:message>
+    <wsdl:message name="SampleClaimIn">
+        <wsdl:part name="parameters" element="tns:SampleClaimkRequest" />
+    </wsdl:message>
+    <wsdl:message name="SampleClaimOut">
+        <wsdl:part name="parameters" element="tns:SampleClaimkResponse" />
+    </wsdl:message>
+
+
+    <!-- WSDL Port Type (Interface) Section
+    ใช้บอกว่ามีฟังก์ชันอะไรให้ใช้บ้างและในแต่ละ operation มีอะไรเป็น request body และ response
+    -->
+    <wsdl:portType name="MockServicePortType">
+        <wsdl:operation name="ClaimKnock">
+            <wsdl:input message="tns:ClaimsKnockReqSoapIn" />
+            <wsdl:output message="tns:ClaimsKnockReqSoapOut" />
+        </wsdl:operation>
+        <wsdl:operation name="SampleClaim">
+            <wsdl:input message="tns:SampleClaimIn" />
+            <wsdl:output message="tns:SampleClaimOut" />
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <!-- WSDL Binding Section เป็นเหมือน Controller -->
+    <wsdl:binding name="MockServiceBinding" type="tns:MockServicePortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+        <wsdl:operation name="ClaimKnock">
+            <soap:operation soapAction="ClaimKnock" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="SampleClaim">
+            <soap:operation soapAction="SampleClaim" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <!-- WSDL Service Section -->
+    <wsdl:service name="MockService">
+        <wsdl:port name="MockServicePortType" binding="tns:MockServiceBinding">
+            <soap:address location="http://localhost:3000/soap/mock" />
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
