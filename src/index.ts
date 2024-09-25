@@ -3,6 +3,8 @@ const soap = require("soap");
 import { createServer, Server } from "http";
 import fs from "fs";
 import path from "path";
+import { faker } from "@faker-js/faker";
+import js2xmlparser from "js2xmlparser";
 
 interface ISampleClaim {
 	CLaimId: string;
@@ -76,28 +78,84 @@ const service = {
 	MockService: {
 		MockServicePortType: {
 			SampleClaim(args: ISampleClaim): ISampleClaimResponse {
-				console.log("sample claim", args.CLaimId);
-				console.log("body request: ", args);
+				const xmlRequest = js2xmlparser.parse("SampleClaim", args);
+				console.log("Request body XML: \n", xmlRequest);
 				return {
 					InsurerIdRq: "ABC-123",
 					PolicyNumberRq: "XYZ-456",
 				};
 			},
 			ClaimKnock(args: ClaimKnockRequest): ClaimKnockResponse {
+				const xmlRequest = js2xmlparser.parse("ClaimKnock", args);
+				console.log("Request body XML: \n", xmlRequest);
 				return {
-					RecordGUID: "5a45b438-8ead-49ac-8043-381b73ad4305",
+					RecordGUID: faker.string.uuid(),
 					SPName: "ZBIX",
 					PolicyNumber: args.PolicyNumberRq || "POL-001",
 					EffectiveDt: new Date().toUTCString(),
 					ExpirationDt: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toUTCString(),
-					PersonName: "John Doe",
+					PersonName: faker.person.fullName(),
 					PolicyTypeCd: args.PolicyTypeCdRq || "AUTO",
 					VehTypeCd: "CAR",
 					Registration: args.RegistrationRq || "ABC123",
-					Manufacturer: "Toyota",
-					Model: "Camry",
+					Manufacturer: faker.vehicle.manufacturer(),
+					Model: faker.vehicle.model(),
 					ChassisSerialNumber: "CHAS123456",
 					EngineSerialNumber: "ENG123456",
+					Displacement: 2000,
+					GrossVehOrCombinedWeight: 1500,
+					SeatingCapacity: 5,
+					Coverages: {
+						Coverage: [
+							{
+								CoverageCd: "COV001",
+								CoverageDesc: "Comprehensive",
+								Limit: {
+									LimitAmt: 100000,
+									LimitAmtEachPerson: 50000,
+									LimitAmtEachAccident: 100000,
+								},
+							},
+						],
+					},
+					ClaimOccurences: {
+						ClaimOccurence: [
+							{
+								ClaimNoticeCd: "CLM001",
+								ItemIdInfo: "ITEM001",
+								NotifyNumber: "NOT001",
+								LossDt: args.LossDtRq || new Date().toUTCString(),
+								KfkStatus: "PENDING",
+								ReserveAmt: 5000,
+								PaymentAmt: args.PaymentAmtRq || 0,
+								PaymentTypeCd: "FULL",
+								InDisputeInd: "N",
+								WhereOccurredDesc: "City Center",
+								LossCauseDesc: "Collision",
+							},
+						],
+					},
+					TransactionResponseDt: new Date().toUTCString(),
+					MsgStatusCd: "SUCCESS",
+				};
+			},
+			ClaimsKnockReqResult(args: ClaimKnockRequest): ClaimKnockResponse {
+				const xmlRequest = js2xmlparser.parse("ClaimsKnockReqResult", args);
+				console.log("Request body XML: \n", xmlRequest);
+				return {
+					RecordGUID: faker.string.uuid(),
+					SPName: "ZBIX",
+					PolicyNumber: args.PolicyNumberRq || "POL-001",
+					EffectiveDt: new Date().toUTCString(),
+					ExpirationDt: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toUTCString(),
+					PersonName: faker.person.fullName(),
+					PolicyTypeCd: args.PolicyTypeCdRq || "AUTO",
+					VehTypeCd: "CAR",
+					Registration: args.RegistrationRq || "ABC123",
+					Manufacturer: faker.vehicle.manufacturer(),
+					Model: faker.vehicle.model(),
+					ChassisSerialNumber: faker.vehicle.vrm(),
+					EngineSerialNumber: faker.vehicle.vin(),
 					Displacement: 2000,
 					GrossVehOrCombinedWeight: 1500,
 					SeatingCapacity: 5,
@@ -151,10 +209,11 @@ app.get("/soap/wsdl", (req, res) => {
 	res.send(wsdl);
 });
 
-soap.listen(server, soapPath, service, wsdl, () => {
-	console.log(`SOAP service running at http://localhost:${port}${soapPath}?wsdl`);
-});
+const soapServer = soap.listen(server, soapPath, service, wsdl);
 
+soapServer.on("response", function (responseXML: any, methodName: any) {
+	console.log("Raw SOAP Response XML: ", responseXML);
+});
 server.listen(port, () => {
 	console.log(`Server listening on port ${port}`);
 });

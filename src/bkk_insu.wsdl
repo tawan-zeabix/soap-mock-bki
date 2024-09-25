@@ -167,6 +167,10 @@
             <input message="tns:SampleClaimIn" />
             <output message="tns:SampleClaimOut" />
         </operation>
+        <operation name="ClaimsKnockReqResult">
+            <input message="tns:ClaimsKnockReqSoapIn" />
+            <output message="tns:ClaimsKnockReqSoapOut" />
+        </operation>
     </portType>
 
     <!-- WSDL Binding Section เป็นเหมือน Controller -->
@@ -184,6 +188,16 @@
 
         <operation name="SampleClaim">
             <soap:operation soapAction="SampleClaim" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+
+        <operation name="ClaimsKnockReqResult">
+            <soap:operation soapAction="ClaimsKnockReqResult" />
             <input>
                 <soap:body use="literal" />
             </input>
