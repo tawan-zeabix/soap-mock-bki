@@ -1,0 +1,48 @@
+<!--
+    - Policies are applied in the order they appear.
+    - Position <base/> inside a section to inherit policies from the outer scope.
+    - Comments within policies are not preserved.
+-->
+<!-- Add policies as children to the <inbound>, <outbound>, <backend>, and <on-error> elements -->
+<policies>
+    <!-- Throttle, authorize, validate, cache, or transform the requests -->
+    <inbound>
+        <base />
+        <choose>
+            <!-- If the request is from kfk-apim.azure-api.net, route to App Service : kfk-dummy-api -->
+            <when condition="@(context.Request.Headers.GetValueOrDefault("Content-Type", "") == "text/xml")">
+                <set-backend-service base-url="https://kfk-dummy-api-feetb6edc4a6fmd9.southeastasia-01.azurewebsites.net" />
+                <!-- soap to rest start here -->
+                <xml-to-json apply="always" kind="direct" />
+            </when>
+            <!-- If the request is from apis.zeabix.com, route to App Service : kfk-bkk-insur -->
+            <when condition="@(context.Request.Headers.GetValueOrDefault("Content-Type", "") == "application/json")">
+                <set-backend-service base-url="https://kfk-bkk-insur-gkb2b6heffehawht.southeastasia-01.azurewebsites.net" />
+                <!-- rest to soap start here -->
+                <json-to-xml apply="always" />
+            </when>
+        </choose>
+    </inbound>
+    <!-- Control if and how the requests are forwarded to services  -->
+    <backend>
+        <base />
+    </backend>
+    <!-- Customize the responses -->
+    <outbound>
+        <base />
+        <choose>
+            <when condition="@(context.Request.Headers.GetValueOrDefault("Host", "") == "kfk-apim.azure-api.net")">
+                <!-- Specific outbound processing for kfk-dummy-api responses -->
+                <json-to-xml apply="always" consider-accept-header="false" />
+            </when>
+            <when condition="@(context.Request.Headers.GetValueOrDefault("Host", "") == "apis.zeabix.com")">
+                <!-- Specific outbound processing for kfk-bkk-insur responses -->
+                <xml-to-json apply="always" kind="direct" />
+            </when>
+        </choose>
+    </outbound>
+    <!-- Handle exceptions and customize error responses  -->
+    <on-error>
+        <base />
+    </on-error>
+</policies>
