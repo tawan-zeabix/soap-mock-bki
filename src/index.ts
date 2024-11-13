@@ -4,20 +4,11 @@ import { createServer, Server } from "http";
 import fs from "fs";
 import path from "path";
 import { faker } from "@faker-js/faker";
-import js2xmlparser from "js2xmlparser";
+const jsontoxml = require("jsontoxml");
 
-interface ISampleClaim {
-	CLaimId: string;
-}
-
-interface ISampleClaimResponse {
-	InsurerIdRq: string;
-	PolicyNumberRq: string;
-}
-
-interface ClaimKnockRequest {
+interface ClaimKnockReq {
 	InsurerIdRq?: string;
-	TransactionRequestDtRq: string;
+	Transaction: string;
 	LossDtRq: string;
 	PolicyNumberRq?: string;
 	PolicyTypeCdRq?: string;
@@ -46,8 +37,8 @@ interface Coverage {
 	CoverageDesc?: string;
 	Limit: {
 		LimitAmt: number;
-		LimitAmtEachPerson: number;
-		LimitAmtEachAccident: number;
+		LimitAmtEachPerson?: number;
+		LimitAmtEachAccident?: number;
 	};
 }
 
@@ -74,20 +65,12 @@ interface ClaimKnockResponse {
 	MsgStatusCd: string;
 }
 
-const service = {
-	MockService: {
-		MockServicePortType: {
-			SampleClaim(args: ISampleClaim): ISampleClaimResponse {
-				const xmlRequest = js2xmlparser.parse("SampleClaim", args);
-				console.log("Request body XML: \n", xmlRequest);
-				return {
-					InsurerIdRq: "ABC-123",
-					PolicyNumberRq: "XYZ-456",
-				};
-			},
-			ClaimKnock(args: ClaimKnockRequest): ClaimKnockResponse {
-				const xmlRequest = js2xmlparser.parse("ClaimKnock", args);
-				console.log("Request body XML: \n", xmlRequest);
+const customer_service = {
+	ClaimsKnockService: {
+		ClaimsKnockPort: {
+			ClaimsKnockReq(args: ClaimKnockReq): ClaimKnockResponse {
+				console.log(jsontoxml({ ClaimNock: args }, { prettyPrint: true }));
+				console.log("ClaimsKnockReq request body: ", args);
 				return {
 					RecordGUID: faker.string.uuid(),
 					SPName: "ZBIX",
@@ -104,16 +87,14 @@ const service = {
 					EngineSerialNumber: "ENG123456",
 					Displacement: 2000,
 					GrossVehOrCombinedWeight: 1500,
-					SeatingCapacity: 5,
+					SeatingCapacity: faker.number.int({ min: 2, max: 7 }),
 					Coverages: {
 						Coverage: [
 							{
 								CoverageCd: "COV001",
 								CoverageDesc: "Comprehensive",
 								Limit: {
-									LimitAmt: 100000,
-									LimitAmtEachPerson: 50000,
-									LimitAmtEachAccident: 100000,
+									LimitAmt: faker.number.int({ min: 1000, max: 999999 }),
 								},
 							},
 						],
@@ -126,66 +107,10 @@ const service = {
 								NotifyNumber: "NOT001",
 								LossDt: args.LossDtRq || new Date().toUTCString(),
 								KfkStatus: "PENDING",
-								ReserveAmt: 5000,
+								ReserveAmt: faker.number.int({ min: 3000, max: 9999 }),
 								PaymentAmt: args.PaymentAmtRq || 0,
 								PaymentTypeCd: "FULL",
 								InDisputeInd: "N",
-								WhereOccurredDesc: "City Center",
-								LossCauseDesc: "Collision",
-							},
-						],
-					},
-					TransactionResponseDt: new Date().toUTCString(),
-					MsgStatusCd: "SUCCESS",
-				};
-			},
-			ClaimsKnockReqResult(args: ClaimKnockRequest): ClaimKnockResponse {
-				const xmlRequest = js2xmlparser.parse("ClaimsKnockReqResult", args);
-				console.log("Request body XML: \n", xmlRequest);
-				return {
-					RecordGUID: faker.string.uuid(),
-					SPName: "ZBIX",
-					PolicyNumber: args.PolicyNumberRq || "POL-001",
-					EffectiveDt: new Date().toUTCString(),
-					ExpirationDt: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toUTCString(),
-					PersonName: faker.person.fullName(),
-					PolicyTypeCd: args.PolicyTypeCdRq || "AUTO",
-					VehTypeCd: "CAR",
-					Registration: args.RegistrationRq || "ABC123",
-					Manufacturer: faker.vehicle.manufacturer(),
-					Model: faker.vehicle.model(),
-					ChassisSerialNumber: faker.vehicle.vrm(),
-					EngineSerialNumber: faker.vehicle.vin(),
-					Displacement: 2000,
-					GrossVehOrCombinedWeight: 1500,
-					SeatingCapacity: 5,
-					Coverages: {
-						Coverage: [
-							{
-								CoverageCd: "COV001",
-								CoverageDesc: "Comprehensive",
-								Limit: {
-									LimitAmt: 100000,
-									LimitAmtEachPerson: 50000,
-									LimitAmtEachAccident: 100000,
-								},
-							},
-						],
-					},
-					ClaimOccurences: {
-						ClaimOccurence: [
-							{
-								ClaimNoticeCd: "CLM001",
-								ItemIdInfo: "ITEM001",
-								NotifyNumber: "NOT001",
-								LossDt: args.LossDtRq || new Date().toUTCString(),
-								KfkStatus: "PENDING",
-								ReserveAmt: 5000,
-								PaymentAmt: args.PaymentAmtRq || 0,
-								PaymentTypeCd: "FULL",
-								InDisputeInd: "N",
-								WhereOccurredDesc: "City Center",
-								LossCauseDesc: "Collision",
 							},
 						],
 					},
@@ -197,19 +122,26 @@ const service = {
 	},
 };
 
-const wsdl = fs.readFileSync(path.join(__dirname, "bkk_insu.wsdl"), "utf8");
+const wsdl = fs.readFileSync(path.join(__dirname, "customer_spec.wsdl"), "utf8");
 
 const app = express();
 const port = 3000;
 const server = createServer(app);
-const soapPath = "/soap/mock";
+const soapPath = "/RECOVERY_GATEWAY_EX_WS_DEV/S_CheckClaimKnock.asmx";
 
 app.get("/soap/wsdl", (req, res) => {
 	res.type("application/xml");
 	res.send(wsdl);
 });
 
-const soapServer = soap.listen(server, soapPath, service, wsdl);
+const soapServer = soap.listen(server, soapPath, customer_service, wsdl);
+
+soapServer.log = (type: any, data: any, req: any) => {
+	console.log("Info: ", data);
+};
+soapServer.on("request", function (requestXML: any, methodName: any) {
+	console.log("Raw SOAP request XML: ", jsontoxml(requestXML, { prettyPrint: true }));
+});
 
 soapServer.on("response", function (responseXML: any, methodName: any) {
 	console.log("Raw SOAP Response XML: ", responseXML);

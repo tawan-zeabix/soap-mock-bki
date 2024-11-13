@@ -1,0 +1,10 @@
+services:
+    soap-mock-bki:
+        container_name: SOAP-mock-bki
+        image: soap-mock-bki:v1
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - 3000:3000
+

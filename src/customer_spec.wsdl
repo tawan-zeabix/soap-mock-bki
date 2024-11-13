@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:tns="http://localhost:3000"
+                  name="ClaimsKnockService"
+                  targetNamespace="http://localhost:3000">
+
+    <!-- Types section: defining the schema for request and response -->
+    <wsdl:types>
+        <xsd:schema targetNamespace="http://localhost:3000">
+            <xsd:element name="ClaimsKnockReq">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="InsurerIdRq" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="Transaction" type="xsd:string"/>
+                        <xsd:element name="LossDtRq" type="xsd:string"/>
+                        <xsd:element name="PolicyNumberRq" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="PolicyTypeCdRq" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="ClaimOccurrenceRq" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="RegistrationRq" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="PaymentAmtRq" type="xsd:decimal"/>
+                        <xsd:element name="UserRq" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="InsurerIdRs" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="PolicyNumberRs" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="ClaimOccurrenceRs" type="xsd:string" minOccurs="0"/>
+                        <xsd:element name="RegistrationRs" type="xsd:string" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            
+            <xsd:element name="ClaimsKnockReqResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="ClaimsKnockReqResult" type="tns:ClaimsKnockResult"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            
+            <!-- Response structure -->
+            <xsd:complexType name="ClaimsKnockResult">
+                <xsd:sequence>
+                    <xsd:element name="RecordGUID" type="xsd:string"/>
+                    <xsd:element name="SPName" type="xsd:string"/>
+                    <xsd:element name="PolicyNumber" type="xsd:string"/>
+                    <xsd:element name="EffectiveDt" type="xsd:dateTime"/>
+                    <xsd:element name="ExpirationDt" type="xsd:dateTime"/>
+                    <xsd:element name="PersonName" type="xsd:string"/>
+                    <xsd:element name="PolicyTypeCd" type="xsd:string"/>
+                    <xsd:element name="VehTypeCd" type="xsd:string"/>
+                    <xsd:element name="Registration" type="xsd:string"/>
+                    <xsd:element name="Manufacturer" type="xsd:string"/>
+                    <xsd:element name="Model" type="xsd:string"/>
+                    <xsd:element name="ChassisSerialNumber" type="xsd:string"/>
+                    <xsd:element name="EngineSerialNumber" type="xsd:string"/>
+                    <xsd:element name="Displacement" type="xsd:decimal"/>
+                    <xsd:element name="GrossVehOrCombinedWeight" type="xsd:decimal"/>
+                    <xsd:element name="SeatingCapacity" type="xsd:integer"/>
+                    <xsd:element name="Coverages" type="tns:Coverages"/>
+                    <xsd:element name="ClaimOccurences" type="tns:ClaimOccurences"/>
+                    <xsd:element name="TransactionResponseDt" type="xsd:dateTime"/>
+                    <xsd:element name="MsgStatusCd" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="Coverages">
+                <xsd:sequence>
+                    <xsd:element name="Coverage" type="tns:Coverage" maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="Coverage">
+                <xsd:sequence>
+                    <xsd:element name="CoverageCd" type="xsd:string"/>
+                    <xsd:element name="CoverageDesc" type="xsd:string"/>
+                    <xsd:element name="Limit">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="LimitAmt" type="xsd:decimal"/>
+                            </xsd:sequence>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="ClaimOccurences">
+                <xsd:sequence>
+                    <xsd:element name="ClaimOccurence" type="tns:ClaimOccurence" maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="ClaimOccurence">
+                <xsd:sequence>
+                    <xsd:element name="ClaimNoticeCd" type="xsd:string"/>
+                    <xsd:element name="ItemIdInfo" type="xsd:string"/>
+                    <xsd:element name="NotifyNumber" type="xsd:string"/>
+                    <xsd:element name="LossDt" type="xsd:dateTime"/>
+                    <xsd:element name="KfkStatus" type="xsd:string"/>
+                    <xsd:element name="ReserveAmt" type="xsd:decimal"/>
+                    <xsd:element name="PaymentAmt" type="xsd:decimal"/>
+                    <xsd:element name="PaymentTypeCd" type="xsd:string"/>
+                    <xsd:element name="InDisputeInd" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+    </wsdl:types>
+
+    <!-- Message definitions -->
+    <wsdl:message name="ClaimsKnockReqMessage">
+        <wsdl:part name="parameters" element="tns:ClaimsKnockReq"/>
+    </wsdl:message>
+    
+    <wsdl:message name="ClaimsKnockReqResponseMessage">
+        <wsdl:part name="parameters" element="tns:ClaimsKnockReqResponse"/>
+    </wsdl:message>
+
+    <!-- PortType section: defines the operation -->
+    <wsdl:portType name="ClaimsKnockPortType">
+        <wsdl:operation name="ClaimsKnockReq">
+            <wsdl:input message="tns:ClaimsKnockReqMessage"/>
+            <wsdl:output message="tns:ClaimsKnockReqResponseMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <!-- Binding section: defines how the service will be called -->
+    <wsdl:binding name="ClaimsKnockBinding" type="tns:ClaimsKnockPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="ClaimsKnockReq">
+            <soap:operation soapAction="ClaimsKnockReq" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <!-- Service section: defines the endpoint where the service is hosted -->
+    <wsdl:service name="ClaimsKnockService">
+        <wsdl:port name="ClaimsKnockPort" binding="tns:ClaimsKnockBinding">
+            <soap:address location="http://localhost:3000"/>
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>

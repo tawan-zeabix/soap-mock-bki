@@ -5,7 +5,7 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "tsc && npm run copy-config",
-		"copy-config": "copyfiles src/bkk_insu.wsdl dist/"
+		"copy-config": "copyfiles src/customer_spec.wsdl dist/"
 	},
 	"keywords": [],
 	"author": "",
@@ -15,7 +15,7 @@
 		"@types/node": "^22.5.5",
 		"body-parser": "^1.20.3",
 		"express": "^4.21.0",
-		"js2xmlparser": "^5.0.0",
+		"jsontoxml": "^1.0.1",
 		"soap": "^1.1.4",
 		"typescript": "^5.6.2"
 	},
@@ -26,3 +26,4 @@
 		"copyfiles": "^2.4.1"
 	}
 }
+

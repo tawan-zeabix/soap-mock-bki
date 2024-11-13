@@ -1,0 +1,39 @@
+{
+	"info": {
+		"_postman_id": "0f2f9810-1b46-4d77-9bf6-547e4964d1d0",
+		"name": "mock soap",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12695852"
+	},
+	"item": [
+		{
+			"name": "BKI Insurance",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n    <soap:Body>\n        <ClaimsKnockReq>\n            <InsurerIdRq>STAR-90</InsurerIdRq>\n            <Transaction>2024-09-24T14:30:00</Transaction>\n            <LossDtRq>2024-09-20T10:15:00</LossDtRq>\n            <PolicyNumberRq>PN123456789</PolicyNumberRq>\n            <PolicyTypeCdRq>Auto</PolicyTypeCdRq>\n            <ClaimsOccurenceRq>123-456-789</ClaimsOccurenceRq>\n            <RegistrationRq>REG123456</RegistrationRq>\n            <PaymentAmtRq>1500.75</PaymentAmtRq>\n            <UserRq>JohnDoe</UserRq>\n            <InsurerIdRs>INS67890</InsurerIdRs>\n            <PolicyNumberRs>PN987654321</PolicyNumberRs>\n            <ClaimsOccurenceRs>987-654-321</ClaimsOccurenceRs>\n            <RegistrationRs>REG654321</RegistrationRs>\n        </ClaimsKnockReq>\n    </soap:Body>\n</soap:Envelope>",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/RECOVERY_GATEWAY_EX_WS_DEV/S_CheckClaimKnock.asmx",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"RECOVERY_GATEWAY_EX_WS_DEV",
+						"S_CheckClaimKnock.asmx"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
